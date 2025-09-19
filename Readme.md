@@ -251,8 +251,8 @@ Configuration Files:
 "बुखार" → Returns: Complete trilingual mapping
 
 // Search by codes
-"AYU-001" → Returns: Complete mapping details
-"TM26.SF20" → Returns: WHO ICD-11 information
+"EM-1" → Returns: Complete mapping details
+"SP57" → Returns: WHO ICD-11 information
 ```
 
 #### Advanced Filtering
@@ -272,19 +272,19 @@ Configuration Files:
 ```javascript
 {
   id: 1,
-  namasteCode: "AYU-001",                    // NAMASTE identifier
+  namasteCode: "EM-1",                    // NAMASTE identifier
   namasteName: "JWARAH",                     // Traditional name
   sanskritName: "ज्वर",                      // Sanskrit (Devanagari)
   englishName: "Fever",                      // English equivalent
   hindiName: "बुखार",                        // Hindi name
-  icdCode: "TM26.SF20",                      // ICD-11 TM2 code
+  icdCode: "SP57",                      // ICD-11 TM2 code
   icdDescription: "Fever disorders...",      // WHO description
   fullDescription: "Complete Ayurvedic...",  // Traditional description
   confidenceLevel: "High",                   // Validation level
   category: "Fever Disorders",               // Medical category
   symptoms: ["Body heat", "Thirst", ...],   // Associated symptoms
   ayurvedicTreatment: "Cooling herbs...",   // Traditional treatment
-  lastUpdated: "2025-09-15"                 // Last modification date
+                 
 }
 ```
 
