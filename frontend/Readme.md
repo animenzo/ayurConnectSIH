@@ -277,14 +277,14 @@ Configuration Files:
   sanskritName: "ज्वर",                      // Sanskrit (Devanagari)
   englishName: "Fever",                      // English equivalent
   hindiName: "बुखार",                        // Hindi name
-  ICD_11_code: "SP57",                      // ICD-11 TM2 code
+  icdCode: "TM26.SF20",                      // ICD-11 TM2 code
   icdDescription: "Fever disorders...",      // WHO description
   fullDescription: "Complete Ayurvedic...",  // Traditional description
   confidenceLevel: "High",                   // Validation level
   category: "Fever Disorders",               // Medical category
   symptoms: ["Body heat", "Thirst", ...],   // Associated symptoms
   ayurvedicTreatment: "Cooling herbs...",   // Traditional treatment
-  lastUpdated: "2025-09-15"                 // Last modification date
+                 
 }
 ```
 
