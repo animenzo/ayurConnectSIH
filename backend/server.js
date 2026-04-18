@@ -69,9 +69,9 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: "http://localhost:3000",
-    origin: "https://ayurconnect-one.vercel.app", // Make sure this matches your frontend port
-     // Make sure this matches your frontend port
-    methods: ["GET", "POST"]
+    origin: ["https://ayurconnect-one.vercel.app","http://localhost:3000"], // Make sure this matches your frontend port
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
