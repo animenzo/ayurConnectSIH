@@ -4,19 +4,19 @@ import { Search, CheckCircle2, ChevronLeft, ChevronRight, ChevronFirst, ChevronL
 export default function DetailedDatabaseList() {
   const [dbData, setDbData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Filtering & Pagination State
   const [searchTerm, setSearchTerm] = useState('');
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
   // 1. Fetch Data from your MongoDB Backend
-useEffect(() => {
+  useEffect(() => {
     const fetchAllCodes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/diseases');
+        const response = await fetch('https://ayurconnect-portal.vercel.app/api/diseases');
         const data = await response.json();
-        
+
         // PROTECT THE FRONTEND: Only set the data if it is a real array
         if (Array.isArray(data)) {
           setDbData(data);
@@ -27,7 +27,7 @@ useEffect(() => {
           console.error("Backend sent invalid data:", data);
           setDbData([]); // Fallback to an empty array so .filter() doesn't crash
         }
-        
+
       } catch (error) {
         console.error("Failed to fetch database records:", error);
         setDbData([]); // Fallback on network error
@@ -40,15 +40,15 @@ useEffect(() => {
   }, []);
 
   // 2. Filter Logic (Searches across multiple fields)
-// 2. Universal Filter Logic
+  // 2. Universal Filter Logic
   const filteredData = dbData.filter(item => {
     // If search is empty, show EVERYTHING
-    if (!searchTerm) return true; 
-    
+    if (!searchTerm) return true;
+
     const searchLower = searchTerm.toLowerCase();
-    
+
     // Check every single piece of text inside the database item
-    return Object.values(item).some(value => 
+    return Object.values(item).some(value =>
       value && String(value).toLowerCase().includes(searchLower)
     );
   });
@@ -66,7 +66,7 @@ useEffect(() => {
 
   return (
     <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
-      
+
       {/* HEADER SECTION */}
       <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-xl font-bold text-slate-800">Complete Morbidity Codes Database - Detailed List</h2>
@@ -74,7 +74,7 @@ useEffect(() => {
 
       {/* CONTROLS SECTION (Search & Entries) */}
       <div className="p-4 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-        
+
         {/* Search Bar */}
         <div className="relative w-full md:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
@@ -89,8 +89,8 @@ useEffect(() => {
 
         {/* Entries Per Page Dropdown */}
         <div className="flex items-center gap-2 text-sm text-slate-600">
-          <select 
-            value={entriesPerPage} 
+          <select
+            value={entriesPerPage}
             onChange={(e) => setEntriesPerPage(Number(e.target.value))}
             className="border border-slate-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-primary-500 outline-none cursor-pointer"
           >
@@ -123,7 +123,7 @@ useEffect(() => {
               <th className="px-6 py-4 max-w-xs">Description</th>
             </tr>
           </thead>
-          
+
           <tbody className="divide-y divide-slate-100">
             {isLoading ? (
               <tr>
@@ -141,18 +141,18 @@ useEffect(() => {
               currentEntries.map((item, index) => {
                 // Determine linked status based on your data structure
                 const isLinked = item.ICD_11_code && item.ICD_11_code !== '';
-                
+
                 return (
                   <tr key={item._id || index} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 text-slate-500">{startIndex + index + 1}</td>
-                    
+
                     <td className="px-6 py-4 font-bold text-slate-800">{item.NAMC_CODE || '-'}</td>
-                    
+
                     {/* Note: Update these property names if your database schema uses different keys for devnagari/english */}
                     <td className="px-6 py-4 font-medium text-slate-700">{item.NAMC_term_DEVANAGARI || '-'}</td>
                     <td className="px-6 py-4 text-slate-600">{item.NAMC_term || '-'}</td>
                     <td className="px-6 py-4 text-slate-600">{item.name_english || '-'}</td>
-                    
+
                     {/* Linked Status Column */}
                     {/* <td className="px-6 py-4">
                       {isLinked ? (
@@ -175,7 +175,7 @@ useEffect(() => {
 
                     {/* Description with truncation */}
                     <td className="px-6 py-4 max-w-xs truncate text-slate-500" title={item.diagnosis || item.description || '-'}>
-                      { item.commonDescription || item.long_definition || '-'}
+                      {item.commonDescription || item.long_definition || '-'}
                     </td>
                   </tr>
                 );
@@ -187,35 +187,35 @@ useEffect(() => {
 
       {/* PAGINATION CONTROLS */}
       <div className="p-4 border-t border-slate-100 bg-white flex items-center justify-end gap-2">
-        <button 
-          onClick={() => setCurrentPage(1)} 
+        <button
+          onClick={() => setCurrentPage(1)}
           disabled={currentPage === 1}
           className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           <ChevronFirst className="w-4 h-4 text-slate-600" />
         </button>
-        <button 
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
           className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           <ChevronLeft className="w-4 h-4 text-slate-600" />
         </button>
-        
+
         {/* Page Indicator */}
         <div className="px-4 py-2 bg-primary-600 text-white font-bold rounded-lg text-sm shadow-sm">
           {currentPage}
         </div>
 
-        <button 
-          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages || totalPages === 0}
           className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           <ChevronRight className="w-4 h-4 text-slate-600" />
         </button>
-        <button 
-          onClick={() => setCurrentPage(totalPages)} 
+        <button
+          onClick={() => setCurrentPage(totalPages)}
           disabled={currentPage === totalPages || totalPages === 0}
           className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >

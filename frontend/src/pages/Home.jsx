@@ -35,9 +35,9 @@ export default function Home({ onLogin }) {
     } else {
       endpoint = authMode === 'login' ? '/api/auth/patient/login' : '/api/auth/patient/register';
     }
-    
+
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`https://ayurconnect-portal.vercel.app${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -62,7 +62,7 @@ export default function Home({ onLogin }) {
   return (
     <div className="min-h-[90vh] flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-primary-50">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        
+
         {/* Left Branding Section */}
         <div className="space-y-6 hidden lg:block">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-slate-200">
@@ -81,13 +81,13 @@ export default function Home({ onLogin }) {
         <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-primary-200/50 border border-slate-100 overflow-hidden">
           {/* Top Tabs */}
           <div className="flex border-b">
-            <button 
+            <button
               onClick={() => { setActiveTab('doctor'); setAuthMode('login'); }}
               className={`flex-1 py-5 font-bold flex items-center justify-center gap-2 transition-all ${activeTab === 'doctor' ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50/30' : 'text-slate-400'}`}
             >
               <Stethoscope className="w-5 h-5" /> Doctor
             </button>
-            <button 
+            <button
               onClick={() => { setActiveTab('patient'); setAuthMode('login'); }}
               className={`flex-1 py-5 font-bold flex items-center justify-center gap-2 transition-all ${activeTab === 'patient' ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50/30' : 'text-slate-400'}`}
             >
@@ -97,18 +97,18 @@ export default function Home({ onLogin }) {
 
           <div className="p-10">
             <h3 className="text-3xl font-bold text-slate-900 mb-2">
-              {activeTab === 'doctor' 
-                ? (authMode === 'login' ? 'Doctor Login' : 'Doctor Registration') 
+              {activeTab === 'doctor'
+                ? (authMode === 'login' ? 'Doctor Login' : 'Doctor Registration')
                 : (authMode === 'login' ? 'Patient Login' : 'Patient Signup')}
             </h3>
             <p className="text-slate-500 mb-8">
-              {activeTab === 'doctor' 
+              {activeTab === 'doctor'
                 ? (authMode === 'login' ? 'Access your clinical dashboard' : 'Join our medical network')
                 : (authMode === 'login' ? 'Access records with your Health ID' : 'Create your ID to share medical history')}
             </p>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
-              
+
               {/* --- DOCTOR SIGNUP FIELDS --- */}
               {activeTab === 'doctor' && authMode === 'signup' && (
                 <>
@@ -173,9 +173,9 @@ export default function Home({ onLogin }) {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input name="password" onChange={handleInputChange} type="password" placeholder="Password" className="auth-input pl-11" required />
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 disabled={loading}
                 className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl shadow-lg shadow-primary-200 transition-all flex items-center justify-center gap-2 group mt-4 disabled:bg-slate-300"
               >
@@ -187,11 +187,11 @@ export default function Home({ onLogin }) {
             {/* Toggle Links */}
             <div className="mt-8 text-center text-sm">
               <span className="text-slate-500">
-                {activeTab === 'doctor' 
+                {activeTab === 'doctor'
                   ? (authMode === 'login' ? "New to the platform?" : "Already registered?")
                   : (authMode === 'login' ? "Don't have a Health ID?" : "Already have an account?")}
               </span>{' '}
-              <button 
+              <button
                 onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
                 className="text-primary-600 font-bold hover:underline"
               >

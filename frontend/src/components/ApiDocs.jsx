@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-  Code, Copy, CheckCircle, Shield, Terminal, Zap, Activity, 
+import {
+  Code, Copy, CheckCircle, Shield, Terminal, Zap, Activity,
   Play, RefreshCw, Search, Database, AlertCircle, FileJson, Key
 } from 'lucide-react';
 import ApiKeyGenerator from './ApiKeyGenerator';
@@ -8,13 +8,13 @@ import ApiKeyGenerator from './ApiKeyGenerator';
 export default function ApiDocs() {
   const [copiedSection, setCopiedSection] = useState('');
   const [testQuery, setTestQuery] = useState('Kasa');
-  
+
   // NEW: State to hold the user's pasted API Key
-  const [apiKey, setApiKey] = useState(''); 
-  
+  const [apiKey, setApiKey] = useState('');
+
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const copyToClipboard = (text, section) => {
     navigator.clipboard.writeText(text);
     setCopiedSection(section);
@@ -31,8 +31,8 @@ export default function ApiDocs() {
     setIsLoading(true);
     try {
       // 2. Use the dynamic apiKey state instead of the hardcoded one
-      const response = await fetch(`http://localhost:5000/api/v1/mappings/search?q=${testQuery}`, {
-        headers: { 'x-api-key': apiKey.trim() } 
+      const response = await fetch(`https://ayurconnect-portal.vercel.app/api/v1/mappings/search?q=${testQuery}`, {
+        headers: { 'x-api-key': apiKey.trim() }
       });
       const data = await response.json();
       setApiResponse(data);
@@ -45,15 +45,15 @@ export default function ApiDocs() {
 
   const codeExamples = {
     search: `// GET: Multilingual search for Ayurvedic terms
-fetch('https://api.namaste-portal.io/v1/mappings/search?q=${testQuery}', {
+fetch('https://ayurconnect-portal.vercel.app/v1/mappings/search?q=${testQuery}', {
   headers: {
     'x-api-key': 'YOUR_PRODUCTION_KEY',
     'Content-Type': 'application/json'
   }
 })`,
-    
+
     fhir: `// GET: Retrieve an HL7 FHIR ConceptMap for a NAMASTE code
-fetch('https://api.namaste-portal.io/v1/mappings/SA71/fhir', {
+fetch('https://ayurconnect-portal.vercel.app/v1/mappings/SA71/fhir', {
   headers: { 'x-api-key': 'YOUR_PRODUCTION_KEY' }
 })`,
 
@@ -117,10 +117,10 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+
         {/* Left Column: Documentation (Unchanged) */}
         <div className="lg:col-span-7 space-y-8">
-          
+
           <section className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
               <Shield className="w-5 h-5 text-primary-600" />
@@ -152,7 +152,7 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
               <div className="p-6 space-y-6">
                 <p className="text-sm text-slate-600 font-medium">Query our database with Sanskrit, Devanagari, or English clinical names to retrieve standard JSON mappings.</p>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><Database className="w-4 h-4 text-slate-400"/> Query Parameters</h4>
+                  <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><Database className="w-4 h-4 text-slate-400" /> Query Parameters</h4>
                   <div className="overflow-hidden border border-slate-200 rounded-lg">
                     <table className="w-full text-left text-sm">
                       <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
@@ -185,7 +185,7 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><FileJson className="w-3 h-3"/> Response (200 OK)</span>
+                    <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><FileJson className="w-3 h-3" /> Response (200 OK)</span>
                     <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 font-mono text-[10px] text-slate-700 h-full overflow-y-auto max-h-[150px]">
                       <pre>{responseSchemas.searchSuccess}</pre>
                     </div>
@@ -210,7 +210,7 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
                   Retrieve a strictly formatted FHIR <code className="text-primary-600 bg-primary-50 px-1 rounded">ConceptMap</code> resource, ready for direct ingestion by Epic, Cerner, or other modern EMRs.
                 </p>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><Code className="w-4 h-4 text-slate-400"/> Path Parameters</h4>
+                  <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><Code className="w-4 h-4 text-slate-400" /> Path Parameters</h4>
                   <div className="overflow-hidden border border-slate-200 rounded-lg">
                     <table className="w-full text-left text-sm">
                       <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
@@ -238,7 +238,7 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><FileJson className="w-3 h-3"/> Response (200 OK)</span>
+                    <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><FileJson className="w-3 h-3" /> Response (200 OK)</span>
                     <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 font-mono text-[10px] text-slate-700 h-full overflow-y-auto max-h-[150px]">
                       <pre>{responseSchemas.fhirSuccess}</pre>
                     </div>
@@ -254,10 +254,10 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
           <div className='mb-10'>
             <ApiKeyGenerator />
           </div>
-          
+
           <div className="sticky top-8 space-y-6">
             <div className="card border-slate-900 bg-slate-900 shadow-2xl overflow-hidden min-h-[500px] flex flex-col rounded-2xl">
-              
+
               <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-800/50">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1.5">
@@ -271,14 +271,14 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
               </div>
 
               <div className="p-6 flex-1 flex flex-col space-y-5">
-                
+
                 {/* NEW: API Key Input Field */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-primary-400 uppercase flex items-center gap-1">
                     <Key className="w-3 h-3" /> Header: x-api-key
                   </label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-white font-mono text-xs focus:ring-1 focus:ring-primary-500 outline-none transition-all placeholder:text-slate-600"
@@ -290,14 +290,14 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-slate-500 uppercase">Search Query (q)</label>
                   <div className="relative">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={testQuery}
                       onChange={(e) => setTestQuery(e.target.value)}
                       className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white font-mono text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all"
                       placeholder="e.g. Kasa"
                     />
-                    <button 
+                    <button
                       onClick={handleTestApi}
                       disabled={isLoading}
                       className="absolute right-2 top-2 p-1.5 bg-primary-600 hover:bg-primary-500 rounded-md text-white transition-colors"
@@ -325,7 +325,7 @@ fetch('http://hapi.fhir.org/baseR4/ConceptMap/$validate', {
                 <span>Status: {apiResponse ? (apiResponse.error ? 'Error' : '200 OK') : '--'}</span>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>

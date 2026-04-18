@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare,User, Users, ClipboardList, Search, FileText, Mail, Phone, ExternalLink, UserPlus, X, Share2 } from 'lucide-react';
+import { MessageSquare, User, Users, ClipboardList, Search, FileText, Mail, Phone, ExternalLink, UserPlus, X, Share2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import toast from 'react-hot-toast';
@@ -10,13 +10,13 @@ export default function DoctorProfile({ setActivePage }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState(null);
- // For Modal
+  // For Modal
   const [activeChat, setActiveChat] = useState(null);
   useEffect(() => { fetchProfile(); }, []);
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/doctors/profile', {
+      const res = await fetch('https://ayurconnect-portal.vercel.app/api/doctors/profile', {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       const data = await res.json();
@@ -117,23 +117,23 @@ export default function DoctorProfile({ setActivePage }) {
 
 
   const handleShare = async (patient) => {
-  try {
-    const res = await fetch(`http://localhost:5000/api/patients/share-report`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'x-auth-token': localStorage.getItem('token') 
-      },
-      body: JSON.stringify({ patientId: patient.patientId })
-    });
+    try {
+      const res = await fetch(`https://ayurconnect-portal.vercel.app/api/patients/share-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': localStorage.getItem('token')
+        },
+        body: JSON.stringify({ patientId: patient.patientId })
+      });
 
-    if (res.ok) {
-      toast.success(`Report synced to ${patient.name}'s portal!`);
+      if (res.ok) {
+        toast.success(`Report synced to ${patient.name}'s portal!`);
+      }
+    } catch (err) {
+      toast.error("Sharing failed");
     }
-  } catch (err) {
-    toast.error("Sharing failed");
-  }
-};
+  };
 
 
   return (
@@ -143,23 +143,23 @@ export default function DoctorProfile({ setActivePage }) {
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center gap-5">
           {/* Change this line near the top of your JSX */}
-<div className="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-primary-200">
-  {doctor?.name ? doctor.name[0] : <User />}
-</div>
+          <div className="w-20 h-20 bg-primary-600 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-primary-200">
+            {doctor?.name ? doctor.name[0] : <User />}
+          </div>
 
-<div>
-  <div className="flex items-center gap-3">
-    <h2 className="text-3xl font-bold text-slate-900">{doctor?.name || "Loading..."}</h2>
-    {doctor?.doctorId && (
-      <span className="px-3 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-full border border-primary-100 uppercase tracking-wider">
-        {doctor.doctorId}
-      </span>
-    )}
-  </div>
-  <p className="text-slate-500 font-medium mt-1">
-    {doctor?.specialization} • {doctor?.clinicName}
-  </p>
-</div>
+          <div>
+            <div className="flex items-center gap-3">
+              <h2 className="text-3xl font-bold text-slate-900">{doctor?.name || "Loading..."}</h2>
+              {doctor?.doctorId && (
+                <span className="px-3 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-full border border-primary-100 uppercase tracking-wider">
+                  {doctor.doctorId}
+                </span>
+              )}
+            </div>
+            <p className="text-slate-500 font-medium mt-1">
+              {doctor?.specialization} • {doctor?.clinicName}
+            </p>
+          </div>
         </div>
 
         <button
@@ -223,22 +223,22 @@ export default function DoctorProfile({ setActivePage }) {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-2">
-                      <button 
-    onClick={() => handleShare(p)}
-    title="Share with Patient"
-    className="p-2 border rounded-lg text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all"
-  >
-    <Share2 className="w-4 h-4" /> {/* Make sure to import Share2 from lucide-react */}
-  </button>
+                      <button
+                        onClick={() => handleShare(p)}
+                        title="Share with Patient"
+                        className="p-2 border rounded-lg text-slate-600 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                      >
+                        <Share2 className="w-4 h-4" /> {/* Make sure to import Share2 from lucide-react */}
+                      </button>
                       <button onClick={() => setSelectedPatient(p)} className="p-2 border rounded-lg hover:text-primary-600"><ExternalLink className="w-4 h-4" /></button>
                       <button onClick={() => generateReport(p)} className="p-2 border rounded-lg hover:text-green-600"><FileText className="w-4 h-4" /></button>
-<button 
-      onClick={() => setActiveChat(p)} 
-      title="Chat with Patient" 
-      className="p-2 border rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
-    >
-      <MessageSquare className="w-4 h-4" />
-    </button>
+                      <button
+                        onClick={() => setActiveChat(p)}
+                        title="Chat with Patient"
+                        className="p-2 border rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -263,7 +263,7 @@ export default function DoctorProfile({ setActivePage }) {
                   <p className="text-[10px] font-bold text-primary-500 uppercase">{new Date(visit.date).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
                   <h4 className="font-bold text-slate-800 text-lg">{visit.diseaseName}</h4>
                   <div className="bg-slate-50 p-4 rounded-xl mt-2 grid grid-cols-2 gap-4 text-sm">
-                    <div><p className="font-bold text-slate-400 uppercase text-[10px]">NAMASTE Code</p><p>{ visit.NAMC_CODE}</p></div>
+                    <div><p className="font-bold text-slate-400 uppercase text-[10px]">NAMASTE Code</p><p>{visit.NAMC_CODE}</p></div>
                     <div><p className="font-bold text-slate-400 uppercase text-[10px]">ICD-11 Code</p><p>{visit.ICD_11_code || visit.ICD_11_code}</p></div>
                   </div>
                 </div>
@@ -272,11 +272,11 @@ export default function DoctorProfile({ setActivePage }) {
           </div>
         </div>
       )}
-     {activeChat && (
-        <ChatWidget 
-          roomId={activeChat.patientId} 
-          currentUserRole="Doctor" 
-          currentUserName={doctor?.name || "Doctor"} 
+      {activeChat && (
+        <ChatWidget
+          roomId={activeChat.patientId}
+          currentUserRole="Doctor"
+          currentUserName={doctor?.name || "Doctor"}
           onClose={() => setActiveChat(null)} // Closes the chat completely
         />
       )}

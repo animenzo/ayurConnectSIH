@@ -3,14 +3,14 @@ import io from 'socket.io-client';
 import { Send, X, MessageSquare } from 'lucide-react';
 
 // Connect to the backend socket server
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://ayurconnect-portal.vercel.app");
 
-export default function ChatWidget({ roomId, currentUserRole, currentUserName,onClose }) {
+export default function ChatWidget({ roomId, currentUserRole, currentUserName, onClose }) {
   const [isOpen, setIsOpen] = useState(true);
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
- useEffect(() => {
+  useEffect(() => {
     if (isOpen && roomId) {
       // Join the room based on Patient ID
       socket.emit("join_room", roomId);
@@ -59,7 +59,7 @@ export default function ChatWidget({ roomId, currentUserRole, currentUserName,on
     <div className="fixed bottom-6 right-6 z-70">
       {/* Chat Toggle Button */}
       {!isOpen && (
-        <button 
+        <button
           onClick={() => setIsOpen(true)}
           className="bg-primary-600 hover:bg-primary-700 text-white p-4 rounded-full shadow-2xl transition-transform active:scale-95"
         >
@@ -76,8 +76,10 @@ export default function ChatWidget({ roomId, currentUserRole, currentUserName,on
               <h3 className="font-bold text-lg">Secure Chat</h3>
               <p className="text-xs text-primary-100">Room ID: {roomId}</p>
             </div>
-            <button onClick={() => {setIsOpen(false)
-                 if(onClose) onClose()}}  className="hover:bg-primary-700 p-1 rounded-full transition-colors">
+            <button onClick={() => {
+              setIsOpen(false)
+              if (onClose) onClose()
+            }} className="hover:bg-primary-700 p-1 rounded-full transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -101,15 +103,15 @@ export default function ChatWidget({ roomId, currentUserRole, currentUserName,on
 
           {/* Input Area */}
           <div className="p-4 bg-white border-t border-slate-100 flex items-center gap-2">
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={currentMessage}
               placeholder="Type a message..."
               onChange={(e) => setCurrentMessage(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && sendMessage()}
               className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500"
             />
-            <button 
+            <button
               onClick={sendMessage}
               className="bg-primary-600 text-white p-3 rounded-xl hover:bg-primary-700 transition-colors"
             >

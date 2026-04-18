@@ -11,7 +11,7 @@ export default function Dashboard({ setActivePage }) {
     highConfidence: 0,
     pendingReview: 0
   });
-  
+
   // NEW: State to hold the weekly progress data for the Bar Chart
   const [weeklyData, setWeeklyData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ export default function Dashboard({ setActivePage }) {
     const fetchDashboardData = async () => {
       try {
         // 1. Fetch main stats
-        const response = await fetch('http://localhost:5000/api/diseases/stats');
+        const response = await fetch('https://ayurconnect-portal.vercel.app/api/diseases/stats');
         const data = await response.json();
         setStats(data);
 
@@ -49,7 +49,7 @@ export default function Dashboard({ setActivePage }) {
   return (
     // Added a subtle slate-50 background to make the white cards pop beautifully
     <div className="space-y-8 bg-slate-50 min-h-[calc(100vh-80px)] rounded-3xl p-2 md:p-4 animate-in fade-in duration-500">
-      
+
       {/* 1. Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
         <div>
@@ -64,19 +64,19 @@ export default function Dashboard({ setActivePage }) {
           })}
         </div>
       </div>
-      
+
       {/* 2. Top Metric Cards */}
       {/* <MetricsCards stats={stats} isLoading={isLoading} /> */}
-      
+
       {/* 3. Analytics Charts (Replaces the old CSS circle) */}
       <AnalyticsCharts stats={stats} weeklyData={weeklyData} isLoading={isLoading} />
-      
+
       {/* 4. Bottom Grid Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        
+
         {/* Left Column (Takes up 2/3 of space): Recent Mappings */}
         <div className="xl:col-span-2 bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden">
-           <RecentMappings setActivePage={setActivePage} />
+          <RecentMappings setActivePage={setActivePage} />
         </div>
 
         {/* Right Column (Takes up 1/3 of space): Quick Search */}

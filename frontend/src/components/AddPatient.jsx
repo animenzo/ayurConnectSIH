@@ -25,7 +25,7 @@ export default function AddPatient({ setActivePage }) {
     if (!id || id.length < 5) return;
     setIsVerifying(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/patients/verify/${id}`, {
+      const res = await fetch(`https://ayurconnect-portal.vercel.app/api/patients/verify/${id}`, {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       const data = await res.json();
@@ -51,7 +51,7 @@ export default function AddPatient({ setActivePage }) {
     if (!code || code.length < 3) return;
     setIsLookingUp(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/patients/lookup/${code}`, {
+      const res = await fetch(`https://ayurconnect-portal.vercel.app/api/patients/lookup/${code}`, {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       const data = await res.json();
@@ -80,7 +80,7 @@ export default function AddPatient({ setActivePage }) {
     if (!patientExists) return toast.error("Please verify a valid Patient ID first");
 
     try {
-      const res = await fetch('http://localhost:5000/api/patients/add-consultation', {
+      const res = await fetch('https://ayurconnect-portal.vercel.app/api/patients/add-consultation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

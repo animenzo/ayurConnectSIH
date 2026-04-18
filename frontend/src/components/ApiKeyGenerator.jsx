@@ -25,7 +25,7 @@ export default function ApiKeyGenerator() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/developers/generate-key', {
+      const response = await fetch('https://ayurconnect-portal.vercel.app/api/developers/generate-key', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -33,9 +33,9 @@ export default function ApiKeyGenerator() {
           email: formData.email
         })
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         setGeneratedKey(data.apiKey);
         setStatus('success');
@@ -78,7 +78,7 @@ export default function ApiKeyGenerator() {
               <div className="w-full bg-black/50 border border-slate-700 rounded-lg p-4 font-mono text-sm text-green-400 break-all pr-12">
                 {generatedKey}
               </div>
-              <button 
+              <button
                 onClick={copyToClipboard}
                 className="absolute right-2 top-2 p-2 bg-slate-800 hover:bg-slate-700 rounded-md text-slate-300 transition-colors"
               >
@@ -86,7 +86,7 @@ export default function ApiKeyGenerator() {
               </button>
             </div>
 
-            <button 
+            <button
               onClick={() => { setStatus('idle'); setFormData({ organizationName: '', email: '' }); }}
               className="w-full py-3 text-sm font-bold text-slate-300 hover:text-white transition-colors"
             >
@@ -106,8 +106,8 @@ export default function ApiKeyGenerator() {
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Organization Name</label>
               <div className="relative">
                 <Building2 className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="organizationName"
                   required
                   value={formData.organizationName}
@@ -122,8 +122,8 @@ export default function ApiKeyGenerator() {
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Developer Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   name="email"
                   required
                   value={formData.email}
@@ -134,8 +134,8 @@ export default function ApiKeyGenerator() {
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={status === 'loading'}
               className="w-full btn-primary py-3 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg font-bold transition-all disabled:opacity-70"
             >

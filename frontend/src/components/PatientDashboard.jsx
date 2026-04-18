@@ -17,7 +17,7 @@ export default function PatientDashboard({ user }) {
 
   const fetchMyHistory = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/patients/my-history', {
+      const res = await fetch('https://ayurconnect-portal.vercel.app/api/patients/my-history', {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       const data = await res.json();
@@ -37,7 +37,7 @@ export default function PatientDashboard({ user }) {
       doc.setFontSize(20);
       doc.setTextColor(30, 41, 59);
       doc.text("MEDICAL CONSULTATION REPORT", 105, 20, { align: 'center' });
-      
+
       doc.setFontSize(10);
       doc.setTextColor(100);
       doc.text(`Issued by: Dr. ${record.doctorName || 'Unknown'}`, 105, 28, { align: 'center' });
@@ -56,10 +56,10 @@ export default function PatientDashboard({ user }) {
       doc.setFontSize(12);
       doc.setTextColor(40);
       doc.text("Clinical Diagnosis:", 20, doc.lastAutoTable.finalY + 15);
-      
+
       // Safety check for symptoms array
-      const symptomsList = record.symptoms && record.symptoms.length > 0 
-        ? record.symptoms.join(', ') 
+      const symptomsList = record.symptoms && record.symptoms.length > 0
+        ? record.symptoms.join(', ')
         : 'None recorded';
 
       autoTable(doc, {
@@ -94,7 +94,7 @@ export default function PatientDashboard({ user }) {
       // Clean file name
       const safeFileName = (record.diseaseName || 'Visit').replace(/\s+/g, '_');
       doc.save(`Medical_Report_${safeFileName}.pdf`);
-      
+
       toast.success("Report downloaded successfully!");
     } catch (err) {
       console.error("PDF Generation Error:", err);
@@ -122,7 +122,7 @@ export default function PatientDashboard({ user }) {
         <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
           <History className="text-primary-600" /> My Medical Records
         </h3>
-        
+
         {loading ? (
           <div className="p-20 text-center animate-pulse text-slate-400">Fetching records...</div>
         ) : history.length === 0 ? (
@@ -144,9 +144,9 @@ export default function PatientDashboard({ user }) {
                     <p className="text-sm text-slate-500">Dr. {record.doctorName || 'Unknown'}</p>
                   </div>
                 </div>
-                
-                <button 
-                  onClick={() => handleViewReport(record)} 
+
+                <button
+                  onClick={() => handleViewReport(record)}
                   className="flex items-center gap-2 px-5 py-3 bg-slate-900 text-white rounded-2xl font-bold hover:bg-primary-600 transition-colors shadow-md"
                 >
                   <Download className="w-4 h-4" /> View Report
@@ -156,10 +156,10 @@ export default function PatientDashboard({ user }) {
           </div>
         )}
       </div>
-   <ChatWidget
-        roomId={user.patientId} 
-        currentUserRole="Patient" 
-        currentUserName={user.name} 
+      <ChatWidget
+        roomId={user.patientId}
+        currentUserRole="Patient"
+        currentUserName={user.name}
       />
     </div>
   );
