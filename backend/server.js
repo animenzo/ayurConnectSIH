@@ -68,7 +68,9 @@ const server = http.createServer(app);
 // Initialize Socket.IO with CORS for React
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Make sure this matches your frontend port
+    // origin: "http://localhost:3000",
+    origin: "https://ayurconnect-one.vercel.app", // Make sure this matches your frontend port
+     // Make sure this matches your frontend port
     methods: ["GET", "POST"]
   }
 });
