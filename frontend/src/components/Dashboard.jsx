@@ -20,7 +20,7 @@ export default function Dashboard({ setActivePage }) {
     const fetchDashboardData = async () => {
       try {
         // 1. Fetch main stats
-        const response = await fetch('https://ayurconnect-portal.vercel.app/api/diseases/stats');
+        const response = await fetch('https://ayurconnect-portal.onrender.com/api/diseases/stats');
         const data = await response.json();
         setStats(data);
 

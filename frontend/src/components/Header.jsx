@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, CheckCircle, Bell, User, LogOut, Activity, ShieldCheck, MessageSquare } from 'lucide-react';
 import io from 'socket.io-client';
 
-const socket = io.connect("https://ayurconnect-portal.vercel.app");
+const socket = io.connect("https://ayurconnect-portal.onrender.com");
 
 export default function Header({ user, setActivePage, onLogout }) {
   const isPatient = user?.role === 'patient' || user?.patientId;
@@ -17,13 +17,13 @@ export default function Header({ user, setActivePage, onLogout }) {
       try {
         if (!isPatient) {
           // DOCTOR FETCH
-          const res = await fetch('https://ayurconnect-portal.vercel.app/api/doctors/unread-messages', {
+          const res = await fetch('https://ayurconnect-portal.onrender.com/api/doctors/unread-messages', {
             headers: { 'x-auth-token': localStorage.getItem('token') }
           });
           if (res.ok) setNotifications(await res.json());
         } else {
           // PATIENT FETCH
-          const res = await fetch('https://ayurconnect-portal.vercel.app/api/patients/unread-messages', {
+          const res = await fetch('https://ayurconnect-portal.onrender.com/api/patients/unread-messages', {
             headers: { 'x-auth-token': localStorage.getItem('token') }
           });
           if (res.ok) {
@@ -155,7 +155,7 @@ export default function Header({ user, setActivePage, onLogout }) {
 
                             // 3. Tell the database to mark these messages as read silently in the background
                             try {
-                              await fetch('https://ayurconnect-portal.vercel.app/api/messages/mark-read', {
+                              await fetch('https://ayurconnect-portal.onrender.com/api/messages/mark-read', {
                                 method: 'POST',
                                 headers: {
                                   'Content-Type': 'application/json',

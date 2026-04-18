@@ -37,7 +37,7 @@ export default function Home({ onLogin }) {
     }
 
     try {
-      const response = await fetch(`https://ayurconnect-portal.vercel.app${endpoint}`, {
+      const response = await fetch(`https://ayurconnect-portal.onrender.com${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

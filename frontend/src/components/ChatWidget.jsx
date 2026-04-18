@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { Send, X, MessageSquare } from 'lucide-react';
 
 // Connect to the backend socket server
-const socket = io.connect("https://ayurconnect-portal.vercel.app");
+const socket = io.connect("https://ayurconnect-portal.onrender.com");
 
 export default function ChatWidget({ roomId, currentUserRole, currentUserName, onClose }) {
   const [isOpen, setIsOpen] = useState(true);

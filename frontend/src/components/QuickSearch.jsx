@@ -22,7 +22,7 @@ export default function QuickSearch({ setActivePage }) {
         queryParams.append('q', searchTerm.trim());
 
         // Fetch from the backend API
-        const response = await fetch(`https://ayurconnect-portal.vercel.app/api/diseases/search?${queryParams.toString()}`);
+        const response = await fetch(`https://ayurconnect-portal.onrender.com/api/diseases/search?${queryParams.toString()}`);
         const dbResults = await response.json();
 
         // ADAPTER: Translate MongoDB schema to QuickSearch UI schema

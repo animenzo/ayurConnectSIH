@@ -16,7 +16,7 @@ export default function DoctorProfile({ setActivePage }) {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch('https://ayurconnect-portal.vercel.app/api/doctors/profile', {
+      const res = await fetch('https://ayurconnect-portal.onrender.com/api/doctors/profile', {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       const data = await res.json();
@@ -118,7 +118,7 @@ export default function DoctorProfile({ setActivePage }) {
 
   const handleShare = async (patient) => {
     try {
-      const res = await fetch(`https://ayurconnect-portal.vercel.app/api/patients/share-report`, {
+      const res = await fetch(`https://ayurconnect-portal.onrender.com/api/patients/share-report`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

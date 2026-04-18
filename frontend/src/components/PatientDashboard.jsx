@@ -17,7 +17,7 @@ export default function PatientDashboard({ user }) {
 
   const fetchMyHistory = async () => {
     try {
-      const res = await fetch('https://ayurconnect-portal.vercel.app/api/patients/my-history', {
+      const res = await fetch('https://ayurconnect-portal.onrender.com/api/patients/my-history', {
         headers: { 'x-auth-token': localStorage.getItem('token') }
       });
       const data = await res.json();

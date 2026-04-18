@@ -31,7 +31,7 @@ export default function ApiDocs() {
     setIsLoading(true);
     try {
       // 2. Use the dynamic apiKey state instead of the hardcoded one
-      const response = await fetch(`https://ayurconnect-portal.vercel.app/api/v1/mappings/search?q=${testQuery}`, {
+      const response = await fetch(`https://ayurconnect-portal.onrender.com/api/v1/mappings/search?q=${testQuery}`, {
         headers: { 'x-api-key': apiKey.trim() }
       });
       const data = await response.json();
@@ -45,7 +45,7 @@ export default function ApiDocs() {
 
   const codeExamples = {
     search: `// GET: Multilingual search for Ayurvedic terms
-fetch('https://ayurconnect-portal.vercel.app/v1/mappings/search?q=${testQuery}', {
+fetch('https://ayurconnect-portal.onrender.com/v1/mappings/search?q=${testQuery}', {
   headers: {
     'x-api-key': 'YOUR_PRODUCTION_KEY',
     'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ fetch('https://ayurconnect-portal.vercel.app/v1/mappings/search?q=${testQuery}',
 })`,
 
     fhir: `// GET: Retrieve an HL7 FHIR ConceptMap for a NAMASTE code
-fetch('https://ayurconnect-portal.vercel.app/v1/mappings/SA71/fhir', {
+fetch('https://ayurconnect-portal.onrender.com/v1/mappings/SA71/fhir', {
   headers: { 'x-api-key': 'YOUR_PRODUCTION_KEY' }
 })`,
 

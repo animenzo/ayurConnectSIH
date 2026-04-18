@@ -14,7 +14,7 @@ export default function PatientSignup({ onLogin, setActivePage }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('https://ayurconnect-portal.vercel.app/api/auth/patient/register', {
+      const res = await fetch('https://ayurconnect-portal.onrender.com/api/auth/patient/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

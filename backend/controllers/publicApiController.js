@@ -102,7 +102,7 @@ exports.validateFHIR = async (req, res) => {
         // This dynamically generates the human-readable HTML for the doctor's screen
         div: `<div xmlns=\"http://www.w3.org/1999/xhtml\"><h2>NAMASTE to ICD-11 Mapping</h2><p>Translating Ayurvedic concept ${disease.NAMC_CODE} (${disease.NAMC_term}) to modern ICD-11 code ${disease.ICD_11_code || "Unmapped"} (${disease.icd11Term || "Unmapped"}).</p></div>`
       },
-      url: "https://ayurconnect-portal.vercel.app/v1/ConceptMap",
+      url: "https://ayurconnect-portal.onrender.com/v1/ConceptMap",
       version: "1.0",
       name: "NamasteToICD11",
       title: "NAMASTE to ICD-11 TM2 Translation",

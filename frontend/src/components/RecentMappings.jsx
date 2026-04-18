@@ -8,7 +8,7 @@ export default function RecentMappings({ setActivePage }) {
   useEffect(() => {
     const fetchRecentMappings = async () => {
       try {
-        const response = await fetch('https://ayurconnect-portal.vercel.app/api/diseases/recent');
+        const response = await fetch('https://ayurconnect-portal.onrender.com/api/diseases/recent');
         const dbResults = await response.json();
 
         // Adapter: Translate MongoDB fields to match your UI structure

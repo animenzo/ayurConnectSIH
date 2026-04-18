@@ -14,7 +14,7 @@ export default function DetailedDatabaseList() {
   useEffect(() => {
     const fetchAllCodes = async () => {
       try {
-        const response = await fetch('https://ayurconnect-portal.vercel.app/api/diseases');
+        const response = await fetch('https://ayurconnect-portal.onrender.com/api/diseases');
         const data = await response.json();
 
         // PROTECT THE FRONTEND: Only set the data if it is a real array

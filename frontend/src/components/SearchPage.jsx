@@ -73,7 +73,7 @@ export default function SearchPage() {
         if (selectedCategory !== 'All Categories') queryParams.append('category', selectedCategory);
         if (confidenceFilter !== 'All Levels') queryParams.append('confidence', confidenceFilter);
 
-        const response = await fetch(`https://ayurconnect-portal.vercel.app/api/diseases/search?${queryParams.toString()}`);
+        const response = await fetch(`https://ayurconnect-portal.onrender.com/api/diseases/search?${queryParams.toString()}`);
         const dbResults = await response.json();
 
         // Format all search results instantly
@@ -100,7 +100,7 @@ export default function SearchPage() {
 
       try {
         // Ping our new backend AI trigger endpoint
-        const response = await fetch('https://ayurconnect-portal.vercel.app/api/diseases/trigger-ai', {
+        const response = await fetch('https://ayurconnect-portal.onrender.com/api/diseases/trigger-ai', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ NAMC_CODE: mapping.namasteCode }) // Send the exact code!

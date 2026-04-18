@@ -25,7 +25,7 @@ export default function ApiKeyGenerator() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('https://ayurconnect-portal.vercel.app/api/developers/generate-key', {
+      const response = await fetch('https://ayurconnect-portal.onrender.com/api/developers/generate-key', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
