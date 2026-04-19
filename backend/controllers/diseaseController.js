@@ -87,6 +87,7 @@ exports.advancedSearch = async (req, res) => {
 
 
 // NEW: Dedicated On-Demand AI Trigger
+// NEW: Dedicated On-Demand AI Trigger
 exports.triggerAiMapping = async (req, res) => {
   try {
     const { NAMC_CODE } = req.body;
@@ -107,20 +108,28 @@ exports.triggerAiMapping = async (req, res) => {
       return res.status(200).json(disease);
     }
 
-    console.log(`⚡ [AI] User clicked ${NAMC_CODE}. Generating mapping on demand...`);
+    console.log(`⚡ [AI] Generating mapping on demand for ${NAMC_CODE}...`);
 
-    // Call the AI
+    // FIX 1: PASS ALL 6 ARGUMENTS IN THE CORRECT ORDER
     const mapping = await getICD11Mapping(
-      disease.NAMC_term_DEVANAGARI || disease.NAMC_term,
-      disease.name_english,
-      disease.long_definition || disease.short_definition,
-      disease.ICD_11_code,
-      disease.icd11Term
+      disease.NAMC_CODE,                                   // 1. namasteCode
+      disease.NAMC_term_DEVANAGARI || disease.NAMC_term,   // 2. namcTerm
+      disease.name_english,                                // 3. englishName
+      disease.long_definition || disease.short_definition, // 4. definition
+      disease.ICD_11_code,                                 // 5. existingICD_11_code
+      disease.icd11Term                                    // 6. existingIcdTerm
     );
 
+    // FIX 2: THE NULL CHECK (Prevents the crash if AI fails)
+    if (!mapping) {
+      console.error(`❌ [AI] Failed to generate a WHO-verified code for ${NAMC_CODE}`);
+      return res.status(500).json({ error: "AI failed to find a WHO-verified code." });
+    }
+
+    // Our new turbo AI returns `icd11Code`
     const newlyGeneratedCode = mapping.icd11Code || mapping.ICD_11_code;
 
-    if (mapping && newlyGeneratedCode && newlyGeneratedCode !== "Not Linked") {
+    if (newlyGeneratedCode && newlyGeneratedCode !== "Not Linked") {
       disease.ICD_11_code = newlyGeneratedCode;
       disease.icd11Term = mapping.icd11Term || disease.icd11Term;
       disease.commonDescription = mapping.commonDescription || disease.commonDescription;
@@ -139,6 +148,40 @@ exports.triggerAiMapping = async (req, res) => {
   }
 };
 
+
+exports.syncWithAI = async (req, res) => {
+  try {
+    const disease = await Disease.findById(req.params.id);
+    if (!disease) return res.status(404).json({ message: "Disease not found in database." });
+
+    // FIX 3: ALSO PASS ALL 6 ARGUMENTS HERE
+    const mapping = await getICD11Mapping(
+      disease.NAMC_CODE,                                   // 1. namasteCode
+      disease.NAMC_term_DEVANAGARI || disease.NAMC_term,   // 2. namcTerm
+      disease.name_english,                                // 3. englishName
+      disease.long_definition || disease.short_definition, // 4. definition
+      disease.ICD_11_code,                                 // 5. existingICD_11_code
+      disease.icd11Term                                    // 6. existingIcdTerm
+    );
+
+    // FIX 4: CHECK FOR NULL AND USE PROPER VARIABLE NAME
+    if (mapping && (mapping.icd11Code || mapping.ICD_11_code)) {
+      disease.ICD_11_code = mapping.icd11Code || mapping.ICD_11_code;
+      disease.icd11Term = mapping.icd11Term;
+      disease.commonDescription = mapping.commonDescription; 
+      disease.matchingPercentage = mapping.matchingPercentage;
+
+      await disease.save();
+      res.status(200).json(disease);
+    } else {
+      res.status(400).json({ message: "AI failed to generate a clinical mapping or was rejected by WHO." });
+    }
+  } catch (err) {
+    console.error("AI Sync Error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.getAllCodes =  async (req, res) => {
   try {
     // .find() with no arguments returns every document in the collection
@@ -151,35 +194,35 @@ exports.getAllCodes =  async (req, res) => {
 }
 
 
-exports.syncWithAI = async (req, res) => {
-  try {
-    const disease = await Disease.findById(req.params.id);
-    if (!disease) return res.status(404).json({ message: "Disease not found in database." });
+// exports.syncWithAI = async (req, res) => {
+//   try {
+//     const disease = await Disease.findById(req.params.id);
+//     if (!disease) return res.status(404).json({ message: "Disease not found in database." });
 
-    // PASS ALL THE NEW PARAMETERS TO THE AI SERVICE!
-    // The AI needs to know if a code already exists so it knows which scenario to run.
-    const mapping = await getICD11Mapping(
-      disease.NAMC_term_DEVANAGARI || disease.NAMC_term, // Prefer Sanskrit, fallback to English script
-      disease.name_english,                              // The English name from CSV
-      disease.short_definition || disease.long_definition, // Definition context
-      disease.ICD_11_code,                                 // Tells AI if it's mapped or not!
-      disease.icd11Term
-    );
+//     // PASS ALL THE NEW PARAMETERS TO THE AI SERVICE!
+//     // The AI needs to know if a code already exists so it knows which scenario to run.
+//     const mapping = await getICD11Mapping(
+//       disease.NAMC_term_DEVANAGARI || disease.NAMC_term, // Prefer Sanskrit, fallback to English script
+//       disease.name_english,                              // The English name from CSV
+//       disease.short_definition || disease.long_definition, // Definition context
+//       disease.ICD_11_code,                                 // Tells AI if it's mapped or not!
+//       disease.icd11Term
+//     );
 
-    if (mapping && mapping.ICD_11_code) {
-      // OVERWRITE THE DATABASE WITH THE AI'S RESULTS
-      disease.ICD_11_code = mapping.ICD_11_code;
-      disease.icd11Term = mapping.icd11Term;
-      disease.commonDescription = mapping.commonDescription; // This now contains Symptoms + Pathology!
-      disease.matchingPercentage = mapping.matchingPercentage;
+//     if (mapping && mapping.ICD_11_code) {
+//       // OVERWRITE THE DATABASE WITH THE AI'S RESULTS
+//       disease.ICD_11_code = mapping.ICD_11_code;
+//       disease.icd11Term = mapping.icd11Term;
+//       disease.commonDescription = mapping.commonDescription; // This now contains Symptoms + Pathology!
+//       disease.matchingPercentage = mapping.matchingPercentage;
 
-      await disease.save();
-      res.status(200).json(disease);
-    } else {
-      res.status(400).json({ message: "Gemini failed to generate a clinical mapping." });
-    }
-  } catch (err) {
-    console.error("AI Sync Error:", err);
-    res.status(500).json({ error: err.message });
-  }
-};
+//       await disease.save();
+//       res.status(200).json(disease);
+//     } else {
+//       res.status(400).json({ message: "Gemini failed to generate a clinical mapping." });
+//     }
+//   } catch (err) {
+//     console.error("AI Sync Error:", err);
+//     res.status(500).json({ error: err.message });
+//   }
+// };

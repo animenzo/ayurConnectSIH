@@ -44,7 +44,7 @@ exports.addPatient = async (req, res) => {
 
 exports.addConsultation = async (req, res) => {
   try {
-    const { NAMC_CODE, diseaseName, icdCode, symptoms, diagnosis, medicines, patientId } = req.body;
+    const { NAMC_CODE, diseaseName, ICD_11_code, symptoms, diagnosis, medicines, patientId } = req.body;
 
     // 1. FIRST: We must fetch and define the 'doctor' variable
     const doctor = await Doctor.findById(req.user.id);
@@ -59,14 +59,14 @@ exports.addConsultation = async (req, res) => {
       doctorId: doctor.doctorId,     
       NAMC_CODE,
       diseaseName,
-      icdCode,
+      ICD_11_code,
       symptoms,
       diagnosis,
       medicines,
       date: new Date()
     };
 
-    // 3. THIRD: Find the patient and save
+    // 3. THIRD: Find the patient and save the record to their history
     const patient = await Patient.findOne({ patientId: patientId.toUpperCase() });
     
     if (!patient) {
@@ -76,7 +76,13 @@ exports.addConsultation = async (req, res) => {
     patient.medicalHistory.push(newRecord);
     await patient.save();
 
-    res.json({ msg: "Consultation Saved", patient });
+    // 4. FOURTH (THE FIX): Link this patient to the Doctor's profile!
+    // We use $addToSet so that if the patient visits 5 times, they only show up once in the patient list.
+    await Doctor.findByIdAndUpdate(req.user.id, {
+        $addToSet: { patients: patient._id }
+    });
+
+    res.json({ msg: "Consultation Saved and linked to Doctor", patient });
   } catch (err) {
     console.error("ADD CONSULTATION ERROR:", err);
     res.status(500).send("Error saving record");

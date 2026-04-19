@@ -40,8 +40,8 @@ export default function SearchPage() {
       shortDefinition: getValid(item.short_definition) || getValid(item.Short_definition) || '--',
       longDefinition: getValid(item.long_definition) || getValid(item.Long_definition) || '--',
 
-      ICD_11_code: rawICD_11_code && rawICD_11_code !== "Not Linked" ? rawICD_11_code : (isProcessed ? 'No Code Found' : 'Not Linked'),
-      icdTerm: rawIcdTerm && rawIcdTerm !== "Not Linked" ? rawIcdTerm : '--',
+      ICD_11_code: rawICD_11_code && rawICD_11_code !== "" ? rawICD_11_code : (isProcessed ? 'No Code Found' : ''),
+      icdTerm: rawIcdTerm && rawIcdTerm !== "" ? rawIcdTerm : '--',
       icdDescription: getValid(item.commonDescription) || 'Pending AI Sync...',
       symptoms: Array.isArray(item.symptoms) ? item.symptoms : [],
       matchingPercentage: Number(item.matchingPercentage) || 0,

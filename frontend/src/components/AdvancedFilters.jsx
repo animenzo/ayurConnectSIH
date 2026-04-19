@@ -39,7 +39,6 @@ export default function AdvancedFilters({
     let displayName = mapping.sanskritName !== '--' ? mapping.sanskritName : mapping.englishName;
     if (displayName === '--') displayName = mapping.namasteName;
 
-
     setShowDropdown(false);
     onSelectResult(mapping);
   };
@@ -85,7 +84,11 @@ export default function AdvancedFilters({
                           <div>
                             <span className="font-bold text-slate-900">{mapping.sanskritName}</span>
                             <span className="text-slate-500 text-xs ml-2">({mapping.namasteName})</span>
-                            <span className="text-slate-500 text-xs ml-2">({mapping.ICD_11_code})</span>
+                            
+                            {/* THE FIX: Only show ICD code if it exists and isn't "Not Linked" */}
+                            {mapping.ICD_11_code && mapping.ICD_11_code !== 'Not Linked' && mapping.ICD_11_code !== '--' && (
+                              <span className="text-slate-500 text-xs ml-2">({mapping.ICD_11_code})</span>
+                            )}
 
                           </div>
                           <span className="font-mono text-xs font-bold text-primary-700 bg-primary-50 border border-primary-100 px-2 py-1 rounded">
