@@ -65,6 +65,7 @@ export default function DoctorProfile({ setActivePage }) {
   }, [fetchProfile]);
 
   // --- PDF GENERATION LOGIC ---
+ // --- PDF GENERATION LOGIC ---
   const generateReport = (patient) => {
     if (!patient.medicalHistory || patient.medicalHistory.length === 0) {
       return toast.error("No medical history available to generate report.");
@@ -73,84 +74,142 @@ export default function DoctorProfile({ setActivePage }) {
     const doc = new jsPDF();
     const lastVisit = patient.medicalHistory[patient.medicalHistory.length - 1];
 
-    // 1. Header
+    // --- 1. CLINIC HEADER ---
     doc.setFillColor(248, 250, 252);
     doc.rect(0, 0, 210, 40, 'F');
-    doc.setFontSize(22);
-    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(24);
+    doc.setTextColor(15, 23, 42); // Dark slate
     doc.setFont("helvetica", "bold");
     doc.text(doctor?.clinicName?.toUpperCase() || "AYURVEDA CLINIC", 105, 20, { align: 'center' });
 
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(71, 85, 105);
-    
-    // ADDED DOCTOR ID TO THE PDF HEADER HERE
     const docIdText = doctor?.doctorId ? ` [ID: ${doctor.doctorId}]` : '';
     doc.text(`Dr. ${doctor?.name || "Doctor"}${docIdText} | ${doctor?.specialization || "Ayurvedic Practitioner"}`, 105, 28, { align: 'center' });
     doc.line(20, 35, 190, 35);
 
-    // 2. Patient Meta
+    // --- 2. PATIENT DEMOGRAPHICS ---
     autoTable(doc, {
       startY: 45,
-      head: [['Field', 'Patient Details', 'Visit Information']],
+      head: [['Patient Details', 'Visit Information']],
       body: [
-        ['Name', patient.name || 'N/A', `Date: ${lastVisit.date ? new Date(lastVisit.date).toLocaleDateString() : 'N/A'}`],
-        ['ID', patient.patientId || 'N/A', `Report ID: ${Math.floor(1000 + Math.random() * 9000)}`],
-        ['Demographics', `${patient.age || '--'} Years / ${patient.gender || '--'}`, `Status: Electronic Record`]
+        [`Name: ${patient.name || 'N/A'}\nID: ${patient.patientId || 'N/A'}\nDemographics: ${patient.age || '--'} Yrs / ${patient.gender || '--'}`, 
+         `Date: ${lastVisit.date ? new Date(lastVisit.date).toLocaleDateString() : 'N/A'}\nReport ID: ${Math.floor(100000 + Math.random() * 900000)}\nStatus: Verified EMR`]
       ],
       theme: 'grid',
-      styles: { fontSize: 9, cellPadding: 3 },
-      headStyles: { fillColor: [30, 41, 59] },
-      columnStyles: { 0: { fontStyle: 'bold', width: 30 } }
+      styles: { fontSize: 10, cellPadding: 5 },
+      headStyles: { fillColor: [30, 41, 59] }, // Dark header
     });
 
-    // 3. Clinical Mapping
-    doc.setFontSize(12);
-    doc.setTextColor(79, 70, 229);
-    doc.text("Clinical Mapping & Diagnosis", 20, doc.lastAutoTable.finalY + 12);
+    // --- 3. CLINICAL NOMENCLATURE & MAPPING ---
+    doc.setFontSize(14);
+    doc.setTextColor(79, 70, 229); // Indigo
+    doc.setFont("helvetica", "bold");
+    doc.text("Standardized Clinical Mapping", 20, doc.lastAutoTable.finalY + 15);
 
     autoTable(doc, {
-      startY: doc.lastAutoTable.finalY + 15,
+      startY: doc.lastAutoTable.finalY + 20,
       body: [
-        ['Disease Name', lastVisit.diseaseName || 'N/A'],
-        ['NAMASTE Code', lastVisit.NAMC_CODE || 'N/A'],
-        // UPDATED: Now checks both icdCode and ICD_11_code so it never misses it
-        ['ICD-11 Code', lastVisit.icd11Code || lastVisit.ICD_11_code || 'Pending Integration'],
-        ['Term Description', lastVisit.diagnosis || 'Standard Ayurvedic Clinical Definition'],
-        ['Symptoms', lastVisit.symptoms?.join(', ') || 'None recorded']
+        ['English Name', lastVisit.name_english || lastVisit.diseaseName || 'N/A'],
+        ['Ayurvedic Term (NAMC)', lastVisit.NAMC_term || 'N/A'],
+        ['ICD-11 Code', lastVisit.ICD_11_code || lastVisit.icdCode || 'Pending Integration'],
+        ['Global Description', lastVisit.diagnosis || 'Standard Ayurvedic Clinical Definition'],
+        ['Standardized Symptoms', lastVisit.symptoms?.length > 0 ? lastVisit.symptoms.join(', ') : 'None recorded']
       ],
       theme: 'striped',
-      styles: { fontSize: 10, cellPadding: 4 },
-      columnStyles: { 0: { fontStyle: 'bold', width: 50, textColor: [71, 85, 105] } }
+      styles: { fontSize: 10, cellPadding: 5 },
+      columnStyles: { 0: { fontStyle: 'bold', width: 55, textColor: [71, 85, 105] } }
     });
 
-    // 4. Treatment Plan
-    doc.setFontSize(12);
-    doc.setTextColor(16, 185, 129);
-    doc.text("Rx - Treatment Plan", 20, doc.lastAutoTable.finalY + 12);
+    // --- 4. DOCTOR'S REAL CLINICAL DIAGNOSIS ---
+    if (lastVisit.doctorDiagnosis && lastVisit.doctorDiagnosis.trim() !== '') {
+      doc.setFontSize(14);
+      doc.setTextColor(225, 29, 72); // Rose red for doctor's attention
+      doc.setFont("helvetica", "bold");
+      doc.text("Doctor's Clinical Diagnosis", 20, doc.lastAutoTable.finalY + 15);
+      
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 20,
+        body: [[lastVisit.doctorDiagnosis]],
+        theme: 'plain',
+        styles: { 
+          fontSize: 10, 
+          cellPadding: 6, 
+          textColor: [15, 23, 42], 
+          fontStyle: 'italic',
+          fillColor: [255, 241, 242] // Very light rose background
+        },
+      });
+    }
+
+    // --- 5. TREATMENT PLAN (Rx) ---
+    doc.setFontSize(14);
+    doc.setTextColor(16, 185, 129); // Emerald green
+    doc.setFont("helvetica", "bold");
+    doc.text("Rx - Treatment Plan", 20, doc.lastAutoTable.finalY + 15);
 
     autoTable(doc, {
-      startY: doc.lastAutoTable.finalY + 15,
-      head: [['Medicine Name', 'Dosage', 'Duration / Instructions']],
-      body: lastVisit.medicines?.map(m => [m.name, m.dosage, m.duration]) || [['N/A', 'N/A', 'N/A']],
+      startY: doc.lastAutoTable.finalY + 20,
+      head: [['Medication / Therapy', 'Dosage', 'Duration']],
+      body: lastVisit.medicines?.length > 0 
+        ? lastVisit.medicines.map(m => [m.name || '--', m.dosage || '--', m.duration || '--']) 
+        : [['No medications recorded', '--', '--']],
       theme: 'grid',
       headStyles: { fillColor: [16, 185, 129] },
-      styles: { fontSize: 10 }
+      styles: { fontSize: 10, cellPadding: 5 }
     });
 
-    const pageHeight = doc.internal.pageSize.height;
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.text("Verified Electronic Medical Record - NAMASTE-ICD11 Standards", 105, pageHeight - 15, { align: 'center' });
-    doc.text(`Digital Signature of Dr. ${doctor?.name || "Doctor"}`, 160, pageHeight - 25);
-    doc.line(140, pageHeight - 30, 190, pageHeight - 30);
+    // --- 6. PATIENT ADVICE & DIET (PATHYA-APATHYA) ---
+    if (lastVisit.doctorNotes && lastVisit.doctorNotes.trim() !== '') {
+      doc.setFontSize(14);
+      doc.setTextColor(217, 119, 6); // Amber/Gold
+      doc.setFont("helvetica", "bold");
+      doc.text("Patient Advice (Pathya-Apathya)", 20, doc.lastAutoTable.finalY + 15);
+      
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 20,
+        body: [[lastVisit.doctorNotes]],
+        theme: 'plain',
+        styles: { 
+          fontSize: 10, 
+          cellPadding: 6, 
+          textColor: [15, 23, 42],
+          fillColor: [254, 252, 232] // Very light yellow background
+        },
+      });
+    }
 
-    doc.save(`${patient.name || 'Patient'}_Standard_Report.pdf`);
-    toast.success("Standard Medical Report Generated");
+    // --- 7. FOOTER & SIGNATURE ---
+    // Calculate space left. If we are too close to the bottom, we shouldn't draw the signature over the text.
+    // jsPDF autoTable handles page breaks for tables, but for absolute positioning we do a quick check.
+    const finalY = doc.lastAutoTable.finalY;
+    const pageHeight = doc.internal.pageSize.height;
+    
+    // If the tables go past 250 on the Y axis, we might need a new page for the signature
+    if (finalY > pageHeight - 40) {
+      doc.addPage();
+    }
+
+    const signatureY = finalY > pageHeight - 40 ? 40 : finalY + 30;
+
+    doc.setFontSize(9);
+    doc.setTextColor(148, 163, 184);
+    doc.setFont("helvetica", "normal");
+    doc.text("Verified Electronic Medical Record - NAMASTE-ICD11 Standards", 105, pageHeight - 15, { align: 'center' });
+    
+    doc.text(`Digital Signature of Dr. ${doctor?.name || "Doctor"}`, 150, signatureY);
+    doc.line(130, signatureY - 5, 190, signatureY - 5);
+
+    // --- SAVE COMMAND ---
+    doc.save(`EMR_${patient.name.replace(/\s+/g, '_')}_${lastVisit.date ? new Date(lastVisit.date).toISOString().split('T')[0] : 'Report'}.pdf`);
+    toast.success("Comprehensive Medical Report Generated!");
   };
 
-  const handleShare = async (patient) => {
+const handleShare = async (patient) => {
+    // 1. Instantly trigger the loading spinner toast
+    const toastId = toast.loading(`Syncing report to ${patient.name}'s portal...`);
+
     try {
       const res = await fetch(`https://ayurconnect-portal.onrender.com/api/patients/share-report`, {
         method: 'POST',
@@ -160,14 +219,17 @@ export default function DoctorProfile({ setActivePage }) {
         },
         body: JSON.stringify({ patientId: patient.patientId })
       });
+      
       if (res.ok) {
-        toast.success(`Report synced to ${patient.name}'s portal!`);
+        // 2. Morph the loading spinner into a green success checkmark
+        toast.success(`Report sent successfully!`, { id: toastId, duration: 3000 });
       } else {
         const data = await res.json();
         throw new Error(data.message || "Sharing failed");
       }
     } catch (err) {
-      toast.error(err.message);
+      // 3. Morph the loading spinner into a red error X if it fails
+      toast.error(err.message, { id: toastId, duration: 4000 });
     }
   };
 

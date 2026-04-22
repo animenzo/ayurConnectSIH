@@ -10,11 +10,11 @@ const { Server } = require('socket.io');
 const app = express();
 app.use(
   cors({
-    origin:["https://ayurconnect-one.vercel.app",
+    origin:[
+      "https://ayurconnect-one.vercel.app",
       "http://localhost:3000"
     ], 
     credentials: true,
-    
   })
 );
 app.use(express.json());
@@ -26,9 +26,12 @@ const authRoutes = require('./routes/authRoutes'); // Doctor Login/Signup
 const patientRoutes = require('./routes/patientRoutes'); // Patient Management
 const doctorRoutes = require('./routes/doctorRoutes'); // Doctor Profile
 const Message = require('./models/Message');
+
+
 // --- 3. CONTROLLERS ---
 const developerController = require('./controllers/developerController');
 const auth = require('./middleware/auth');
+
 
 // --- 4. APPLY ROUTES ---
 app.use('/api/auth', authRoutes);

@@ -105,19 +105,21 @@ exports.registerPatient = async (req, res) => {
 // 2. Updated loginPatient logic
 exports.loginPatient = async (req, res) => {
   try {
-    const { patientId, password } = req.body;
+    // 1. Extract email and password from the frontend request
+    const { email, password } = req.body;
 
-    if (!patientId || !password) {
+    // FIX 1: Check if 'email' exists, not 'patientId'
+    if (!email || !password) {
       return res.status(400).json({ msg: "Please enter all fields" });
     }
 
-    // CRITICAL FIX: Added .select("+password") to retrieve the hidden field
+    // FIX 2: Search MongoDB in the 'email' field, not the 'patientId' field
     const patient = await Patient.findOne({ 
-      patientId: patientId.toUpperCase() 
+      email: email.toLowerCase() // Pro-tip: Convert to lowercase to prevent case-sensitive login errors
     }).select("+password");
 
     if (!patient) {
-      return res.status(400).json({ msg: "Invalid Patient ID" });
+      return res.status(400).json({ msg: "Invalid email" });
     }
 
     // Safety Check: Ensure the database actually has a password for this record
@@ -125,16 +127,18 @@ exports.loginPatient = async (req, res) => {
       return res.status(500).json({ msg: "Authentication data missing for this user" });
     }
 
-    // Now bcrypt will receive (string, string) instead of (string, undefined)
+    // Compare passwords
     const isMatch = await bcrypt.compare(password, patient.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid Password" });
 
+    // Generate token
     const token = jwt.sign(
       { id: patient._id, role: 'patient' }, 
       process.env.JWT_SECRET, 
       { expiresIn: "7d" }
     );
 
+    // Send successful response
     res.json({
       token,
       patient: {

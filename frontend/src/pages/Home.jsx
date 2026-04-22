@@ -14,7 +14,7 @@ export default function Home({ onLogin }) {
     password: '',
     specialization: '',
     clinicName: '',
-    patientId: '',
+    
     age: '',
     gender: 'Male',
     contact: ''
@@ -164,7 +164,14 @@ export default function Home({ onLogin }) {
                 ) : (
                   <>
                     <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-500" />
-                    <input name="patientId" onChange={handleInputChange} type="text" placeholder="Patient ID (PAT-2026-XXXX)" className="auth-input pl-11 font-mono uppercase" required />
+                   <input 
+  name="email" 
+  onChange={handleInputChange} 
+  type="email" 
+  placeholder="Email Address (e.g., patient@example.com)" 
+  className="auth-input pl-11" 
+  required 
+/>
                   </>
                 )}
               </div>

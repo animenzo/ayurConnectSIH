@@ -48,6 +48,7 @@ exports.searchMappings = async (req, res) => {
   }
 };
 
+
 // GET: Get specific mapping by NAMASTE Code (/api/v1/mappings/:code)
 exports.getMappingByCode = async (req, res) => {
   try {

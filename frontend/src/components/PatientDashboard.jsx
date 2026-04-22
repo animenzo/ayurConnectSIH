@@ -141,7 +141,7 @@ export default function PatientDashboard({ user }) {
                   <div>
                     <p className="text-xs font-bold text-primary-500 uppercase">{new Date(record.date).toLocaleDateString()}</p>
                     <h4 className="text-xl font-bold">{record.diseaseName || 'Clinical Visit'}</h4>
-                    <p className="text-sm text-slate-500">Dr. {record.doctorName || 'Unknown'}</p>
+                    <p className="text-sm text-slate-500">Dr. {record.doctorName ||"" }</p>
                   </div>
                 </div>
 

@@ -11,12 +11,16 @@ const PatientSchema = new mongoose.Schema({
   email: String,
 password: { type: String, required: true, select: false }, // 👈 ADD THIS LINE
   medicalHistory: [{
+    doctorName: { type: String }, // 🔴 YOU MUST ADD THIS
+    doctorId: { type: String },
     date: { type: Date, default: Date.now },
     diseaseName: String,
     NAMC_CODE: String,
     ICD_11_code: String,
     symptoms: [String],
     diagnosis: String,
+    doctorDiagnosis: String, // <-- Make sure this is here
+    doctorNotes: String,
     medicines: [{
       name: String,
       dosage: String,

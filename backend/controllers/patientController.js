@@ -44,29 +44,44 @@ exports.addPatient = async (req, res) => {
 
 exports.addConsultation = async (req, res) => {
   try {
-    const { NAMC_CODE, diseaseName, ICD_11_code, symptoms, diagnosis, medicines, patientId } = req.body;
+    // 1. EXTRACT ALL FIELDS (Added doctorDiagnosis and doctorNotes)
+    const { 
+      NAMC_CODE, 
+      diseaseName, 
+      NAMC_term,
+      ICD_11_code, 
+      symptoms, 
+      diagnosis, 
+      doctorDiagnosis, // <-- NEW 
+      doctorNotes,     // <-- NEW
+      medicines, 
+      patientId 
+    } = req.body;
 
-    // 1. FIRST: We must fetch and define the 'doctor' variable
+    // 2. Fetch the doctor
     const doctor = await Doctor.findById(req.user.id);
     
     if (!doctor) {
       return res.status(404).json({ msg: "Doctor not found" });
     }
 
-    // 2. SECOND: Now that 'doctor' exists, we can safely use doctor.name
+    // 3. Create the new medical record object
     const newRecord = {
       doctorName: doctor.name,       
       doctorId: doctor.doctorId,     
       NAMC_CODE,
+      NAMC_term,
       diseaseName,
       ICD_11_code,
       symptoms,
-      diagnosis,
+      diagnosis,         // The AI/Standard Disease Description
+      doctorDiagnosis,   // The Doctor's real manual diagnosis
+      doctorNotes,       // Patient Advice / Pathya-Apathya
       medicines,
       date: new Date()
     };
 
-    // 3. THIRD: Find the patient and save the record to their history
+    // 4. Find the patient and save the record to their history
     const patient = await Patient.findOne({ patientId: patientId.toUpperCase() });
     
     if (!patient) {
@@ -76,8 +91,7 @@ exports.addConsultation = async (req, res) => {
     patient.medicalHistory.push(newRecord);
     await patient.save();
 
-    // 4. FOURTH (THE FIX): Link this patient to the Doctor's profile!
-    // We use $addToSet so that if the patient visits 5 times, they only show up once in the patient list.
+    // 5. Link this patient to the Doctor's profile
     await Doctor.findByIdAndUpdate(req.user.id, {
         $addToSet: { patients: patient._id }
     });
@@ -88,7 +102,6 @@ exports.addConsultation = async (req, res) => {
     res.status(500).send("Error saving record");
   }
 };
-
 // controllers/patientController.js
 
 exports.shareReport = async (req, res) => {
